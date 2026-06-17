@@ -1,4 +1,4 @@
-# Morse Trainer — Spring Boot + JavaFX
+## Morse Trainer in Spring Boot + JavaFX
 
 A desktop game for learning Morse code. The app plays the Morse code for a
 random letter; you pick the matching letter from a grid. Correct answers build
