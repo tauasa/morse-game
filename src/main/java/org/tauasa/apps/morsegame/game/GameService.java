@@ -24,7 +24,7 @@ import org.tauasa.apps.morsegame.audio.MorseConverter;
 @Service
 public class GameService {
 
-    private MorseConverter converter = new MorseConverter();
+    private MorseConverter converter = new MorseConverter(); // Spring injects the shared bean, but allow default for tests
     private Random         random = new Random();
 
     private GameMode  mode    = GameMode.LETTERS;
@@ -37,7 +37,6 @@ public class GameService {
     public GameService() {
         
     }
-
     /** Spring injects the shared {@link MorseConverter} bean. */
     public GameService(MorseConverter converter) {
         this(converter, new Random());
@@ -61,6 +60,11 @@ public class GameService {
     /** The characters currently in play (for laying out the grid). */
     public List<Character> characters() {
         return mode.characters();
+    }
+
+    /** The Morse code pattern for a single character (e.g. 'A' → ".-"). */
+    public String morseFor(char c) {
+        return converter.encode(String.valueOf(c));
     }
 
     // ── Round lifecycle ────────────────────────────────────────────────────────────

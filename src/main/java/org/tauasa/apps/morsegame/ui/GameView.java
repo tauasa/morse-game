@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -49,6 +50,13 @@ public class GameView {
 
     // Letter buttons keyed by character, so we can flash the right one.
     private final Map<Character, Button> letterButtons = new HashMap<>();
+
+    // The dot/dash pattern label inside each button, keyed by character,
+    // so we can show/hide them together when the toggle changes.
+    private final Map<Character, Label> patternLabels = new HashMap<>();
+
+    // When true, each grid button shows its Morse pattern below the letter.
+    private boolean showPatterns = false;
 
     // Status / stats labels
     private Label promptLabel;
@@ -143,8 +151,14 @@ public class GameView {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        // Toggle: show the dot/dash pattern beneath each letter (a learning aid).
+        CheckBox patternToggle = new CheckBox("Show patterns");
+        patternToggle.getStyleClass().add("pattern-toggle");
+        patternToggle.setSelected(showPatterns);
+        patternToggle.setOnAction(e -> setShowPatterns(patternToggle.isSelected()));
+
         HBox controls = new HBox(10, replayButton, skipButton, spacer,
-                                 new Label("Mode:"), modeBox);
+                                 patternToggle, new Label("Mode:"), modeBox);
         controls.setAlignment(Pos.CENTER_LEFT);
         controls.getStyleClass().add("controls");
 
@@ -176,13 +190,29 @@ public class GameView {
     private void populateGrid() {
         grid.getChildren().clear();
         letterButtons.clear();
+        patternLabels.clear();
 
         List<Character> chars = gameService.characters();
         int cols = computeColumns(chars.size());
 
         for (int i = 0; i < chars.size(); i++) {
             char c = chars.get(i);
-            Button btn = new Button(String.valueOf(c));
+
+            // Letter on top, Morse pattern below — stacked in a VBox so the
+            // pattern can be shown or hidden without changing the layout.
+            Label letterLbl = new Label(String.valueOf(c));
+            letterLbl.getStyleClass().add("letter-glyph");
+
+            Label patternLbl = new Label(gameService.morseFor(c));
+            patternLbl.getStyleClass().add("letter-pattern");
+            patternLbl.setVisible(showPatterns);
+            patternLbl.setManaged(showPatterns); // collapse space when hidden
+
+            VBox content = new VBox(2, letterLbl, patternLbl);
+            content.setAlignment(Pos.CENTER);
+
+            Button btn = new Button();
+            btn.setGraphic(content);
             btn.getStyleClass().add("letter-btn");
             btn.setMaxWidth(Double.MAX_VALUE);
             btn.setMaxHeight(Double.MAX_VALUE);
@@ -194,6 +224,16 @@ public class GameView {
             int col = i % cols;
             grid.add(btn, col, row);
             letterButtons.put(c, btn);
+            patternLabels.put(c, patternLbl);
+        }
+    }
+
+    /** Toggle the dot/dash pattern under every letter. */
+    private void setShowPatterns(boolean show) {
+        this.showPatterns = show;
+        for (Label lbl : patternLabels.values()) {
+            lbl.setVisible(show);
+            lbl.setManaged(show);
         }
     }
 

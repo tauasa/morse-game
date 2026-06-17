@@ -46,7 +46,7 @@
 
 .morse-pattern {
     -fx-font-family: "Consolas", "Courier New", monospace;
-    -fx-font-size: 26px;
+    -fx-font-size: 32px;
     -fx-text-fill: #2f6fed;
     -fx-letter-spacing: 4px;
     -fx-min-height: 32px;
@@ -104,9 +104,6 @@
 
 .letter-btn {
     -fx-background-color: white;
-    -fx-text-fill: #1c2733;
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
     -fx-min-width: 64px;
     -fx-min-height: 64px;
     -fx-pref-width: 80px;
@@ -118,6 +115,21 @@
     -fx-effect: dropshadow(gaussian, rgba(20,40,70,0.06), 6, 0, 0, 2);
 }
 
+/* The letter, stacked above its (optional) pattern. */
+.letter-glyph {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1c2733;
+}
+
+/* The dot/dash pattern shown below the letter when "Show patterns" is on. */
+.letter-pattern {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 24px;
+    -fx-text-fill: #2f6fed;
+    -fx-letter-spacing: 1px;
+}
+
 .letter-btn:hover {
     -fx-background-color: #eaf1ff;
     -fx-border-color: #2f6fed;
@@ -127,18 +139,24 @@
     -fx-background-color: #dbe7ff;
 }
 
-/* Correct answer flash */
+/* Correct answer flash — recolour the child labels too. */
 .letter-btn.correct {
     -fx-background-color: #1a9e5c;
-    -fx-text-fill: white;
     -fx-border-color: #178a50;
 }
+.letter-btn.correct .letter-glyph,
+.letter-btn.correct .letter-pattern {
+    -fx-text-fill: white;
+}
 
-/* Wrong answer flash */
+/* Wrong answer flash — recolour the child labels too. */
 .letter-btn.wrong {
     -fx-background-color: #d9443f;
-    -fx-text-fill: white;
     -fx-border-color: #c23a36;
+}
+.letter-btn.wrong .letter-glyph,
+.letter-btn.wrong .letter-pattern {
+    -fx-text-fill: white;
 }
 
 /* ── Stats bar ──────────────────────────────────────────── */
@@ -153,4 +171,25 @@
     -fx-font-size: 14px;
     -fx-text-fill: #3a4453;
     -fx-font-weight: bold;
+}
+
+/* "Show patterns" toggle in the controls row */
+.pattern-toggle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #5a6473;
+}
+
+.pattern-toggle .box {
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #c6cdd8;
+}
+
+.pattern-toggle:selected .mark {
+    -fx-background-color: white;
+}
+
+.pattern-toggle:selected .box {
+    -fx-background-color: #2f6fed;
+    -fx-border-color: #2f6fed;
 }
