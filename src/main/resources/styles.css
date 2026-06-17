@@ -1,0 +1,156 @@
+/* ===================================================================
+   Morse Trainer — JavaFX stylesheet
+   Clean, focused learning UI with a calm blue/slate palette.
+   =================================================================== */
+
+.game-root {
+    -fx-background-color: #f4f6f9;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+
+.header {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #e2e6ec transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8a94a6;
+    -fx-letter-spacing: 3px;
+}
+
+.prompt {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1c2733;
+}
+
+.feedback {
+    -fx-font-size: 15px;
+    -fx-text-fill: #5a6473;
+    -fx-min-height: 22px;
+}
+
+.feedback-correct {
+    -fx-text-fill: #1a9e5c;
+    -fx-font-weight: bold;
+}
+
+.feedback-wrong {
+    -fx-text-fill: #d9443f;
+    -fx-font-weight: bold;
+}
+
+.morse-pattern {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 26px;
+    -fx-text-fill: #2f6fed;
+    -fx-letter-spacing: 4px;
+    -fx-min-height: 32px;
+}
+
+/* ── Controls row ───────────────────────────────────────── */
+
+.controls {
+    -fx-padding: 8 0 0 0;
+}
+
+.action-btn {
+    -fx-background-color: #2f6fed;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+}
+
+.action-btn:hover  { -fx-background-color: #1f5fdd; }
+.action-btn:disabled { -fx-opacity: 0.5; }
+
+.ghost-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5a6473;
+    -fx-font-size: 13px;
+    -fx-border-color: #c6cdd8;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 7 14 7 14;
+    -fx-cursor: hand;
+}
+
+.ghost-btn:hover {
+    -fx-background-color: #eef1f6;
+    -fx-text-fill: #1c2733;
+}
+
+.mode-box {
+    -fx-background-radius: 8;
+    -fx-font-size: 13px;
+}
+
+/* ── Letter grid ────────────────────────────────────────── */
+
+.grid-wrap {
+    -fx-background-color: #f4f6f9;
+}
+
+.letter-grid {
+    -fx-min-width: 420px;
+}
+
+.letter-btn {
+    -fx-background-color: white;
+    -fx-text-fill: #1c2733;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-min-width: 64px;
+    -fx-min-height: 64px;
+    -fx-pref-width: 80px;
+    -fx-pref-height: 72px;
+    -fx-background-radius: 12;
+    -fx-border-color: #e2e6ec;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(20,40,70,0.06), 6, 0, 0, 2);
+}
+
+.letter-btn:hover {
+    -fx-background-color: #eaf1ff;
+    -fx-border-color: #2f6fed;
+}
+
+.letter-btn:pressed {
+    -fx-background-color: #dbe7ff;
+}
+
+/* Correct answer flash */
+.letter-btn.correct {
+    -fx-background-color: #1a9e5c;
+    -fx-text-fill: white;
+    -fx-border-color: #178a50;
+}
+
+/* Wrong answer flash */
+.letter-btn.wrong {
+    -fx-background-color: #d9443f;
+    -fx-text-fill: white;
+    -fx-border-color: #c23a36;
+}
+
+/* ── Stats bar ──────────────────────────────────────────── */
+
+.stats-bar {
+    -fx-background-color: white;
+    -fx-border-color: #e2e6ec transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
+.stat {
+    -fx-font-size: 14px;
+    -fx-text-fill: #3a4453;
+    -fx-font-weight: bold;
+}
