@@ -4,7 +4,7 @@ A desktop game for learning Morse code. The app plays the Morse code for a
 random letter; you pick the matching letter from a grid. Correct answers build
 your streak; the app tracks score and accuracy.
 
-**Repository:** https://github.com/tauasa/morse
+![Screenshot](screenshot.png)
 
 ---
 
