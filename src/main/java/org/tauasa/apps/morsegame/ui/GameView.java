@@ -1,19 +1,9 @@
 package org.tauasa.apps.morsegame.ui;
 
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
-import javafx.util.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.tauasa.apps.morsegame.audio.MorsePlayer;
@@ -21,9 +11,30 @@ import org.tauasa.apps.morsegame.game.GameMode;
 import org.tauasa.apps.morsegame.game.GameService;
 import org.tauasa.apps.morsegame.game.GuessResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javafx.animation.PauseTransition;
+import javafx.application.HostServices;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * The JavaFX user interface, managed as a Spring {@link Component}.
@@ -69,6 +80,10 @@ public class GameView {
     private Button replayButton;
     private GridPane grid;
 
+    // Captured from StageReadyEvent — needed for the About dialog.
+    private Stage        primaryStage;
+    private HostServices hostServices;
+
     private boolean inputLocked = false; // true during the post-correct pause
 
     public GameView(GameService gameService, MorsePlayer player) {
@@ -81,14 +96,17 @@ public class GameView {
     @EventListener
     public void onStageReady(StageReadyEvent event) {
         Stage stage = event.getStage();
+        this.primaryStage = stage;
+        this.hostServices = event.getHostServices();
 
         BorderPane root = new BorderPane();
         root.getStyleClass().add("game-root");
-        root.setTop(buildHeader());
+        // Menu bar sits above the header, both stacked in the top region.
+        root.setTop(new VBox(buildMenuBar(), buildHeader()));
         root.setCenter(buildCenter());
         root.setBottom(buildStatsBar());
 
-        Scene scene = new Scene(root, 720, 640);
+        Scene scene = new Scene(root, 720, 670);
         loadStylesheet(scene);
 
         stage.setTitle("Morse Trainer");
@@ -99,6 +117,80 @@ public class GameView {
 
         // Start the first round once the UI is visible.
         startNewRound();
+    }
+
+    // ── Menu bar ────────────────────────────────────────────────────────────────
+
+    private MenuBar buildMenuBar() {
+        // File > Exit
+        MenuItem exitItem = new MenuItem("Exit");
+        exitItem.setOnAction(e -> Platform.exit());
+        Menu fileMenu = new Menu("File");
+        fileMenu.getItems().add(exitItem);
+
+        // Help > About
+        MenuItem aboutItem = new MenuItem("About");
+        aboutItem.setOnAction(e -> showAboutDialog());
+        Menu helpMenu = new Menu("Help");
+        helpMenu.getItems().add(aboutItem);
+
+        MenuBar bar = new MenuBar(fileMenu, helpMenu);
+        bar.getStyleClass().add("menu-bar");
+        return bar;
+    }
+
+    // ── About dialog ────────────────────────────────────────────────────────────
+
+    private void showAboutDialog() {
+        Stage dialog = new Stage();
+        dialog.initOwner(primaryStage);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.setTitle("About Morse Trainer");
+        dialog.setResizable(false);
+
+        Label logo = new Label("\u00B7\u2212\u2212");   // ·−−  (Morse "W")
+        logo.getStyleClass().add("about-logo");
+
+        Label name = new Label("Morse Trainer");
+        name.getStyleClass().add("about-name");
+
+        Label version = new Label("Version 1.0.0");
+        version.getStyleClass().add("about-version");
+
+        Label tagline = new Label("Learn Morse code by ear.");
+        tagline.getStyleClass().add("about-tagline");
+
+        Label copyright = new Label("Copyright \u00A9 2026 Tauasa Timoteo\n"
+                                    + "Released under the MIT License.");
+        copyright.getStyleClass().add("about-copyright");
+        copyright.setWrapText(true);
+        copyright.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+
+        // Clickable GitHub link — opens in the system browser via HostServices.
+        Hyperlink repoLink = new Hyperlink("github.com/tauasa/morse-game");
+        repoLink.getStyleClass().add("about-link");
+        final String repoUrl = "https://github.com/tauasa/morse-game";
+        repoLink.setOnAction(e -> {
+            if (hostServices != null) {
+                hostServices.showDocument(repoUrl);
+            }
+        });
+
+        Button okButton = new Button("OK");
+        okButton.getStyleClass().add("action-btn");
+        okButton.setDefaultButton(true);
+        okButton.setOnAction(e -> dialog.close());
+
+        VBox content = new VBox(10, logo, name, version, tagline,
+                                copyright, repoLink, okButton);
+        content.setAlignment(Pos.CENTER);
+        content.setPadding(new Insets(28, 36, 24, 36));
+        content.getStyleClass().add("about-dialog");
+
+        Scene scene = new Scene(content);
+        loadStylesheet(scene);
+        dialog.setScene(scene);
+        dialog.showAndWait();
     }
 
     // ── Header: prompt + controls ────────────────────────────────────────────────
