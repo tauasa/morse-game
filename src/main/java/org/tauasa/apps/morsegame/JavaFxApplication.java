@@ -36,8 +36,9 @@ public class JavaFxApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Hand the primary stage to Spring; GameView (a bean) listens for this.
-        context.publishEvent(new StageReadyEvent(primaryStage));
+        // Hand the primary stage and host services to Spring;
+        // GameView (a bean) listens for this event.
+        context.publishEvent(new StageReadyEvent(primaryStage, getHostServices()));
     }
 
     @Override
